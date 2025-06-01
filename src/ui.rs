@@ -21,6 +21,7 @@ pub struct State {
     max_cap: u32,
     path_part: String,
     results: Vec<Result<DDL, ExtractError>>,
+    downloading: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -50,6 +51,7 @@ impl State {
             max_cap: f32::MAX as u32,
             path_part: String::new(),
             results: vec![],
+            downloading: false,
         }
     }
 
@@ -61,6 +63,8 @@ impl State {
                 return if !self.init_done {
                     Task::none()
                 } else {
+                    self.downloading = true;
+
                     let content = self.editor_content.text();
                     Task::perform(
                         async move {
@@ -93,7 +97,9 @@ impl State {
                         )
                     }));
                 }
-                Err(_e) => {}
+                Err(_e) => {
+                    self.downloading = false;
+                }
             },
             Message::Edit(action) => {
                 self.editor_content.perform(action);
@@ -107,6 +113,7 @@ impl State {
                     direct_links.append(&mut self.results);
                     let path_part = self.path_part.clone();
 
+                    self.downloading = false;
                     return Task::done(Message::Extracted {
                         path_part,
                         direct_links,
@@ -178,12 +185,17 @@ impl State {
     }
 
     pub fn view(&self) -> iced::Element<'_, Message> {
-        // create the View Logic (UI)
+        let button = if self.downloading {
+            widget::button("scrape")
+        } else {
+            widget::button("scrape").on_press(Message::Scrape)
+        };
+
         let row = widget::row![
             widget::text_editor(&self.editor_content)
                 .placeholder("https://fitgirl-repacks.site/xxx-xxxxxx-xxxxxx/")
                 .on_action(Message::Edit),
-            widget::button("scrape").on_press(Message::Scrape)
+            button
         ];
         let col = widget::column![
             row,
