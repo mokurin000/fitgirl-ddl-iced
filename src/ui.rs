@@ -97,8 +97,17 @@ impl State {
                         )
                     }));
                 }
-                Err(_e) => {
+                Err(e) => {
                     self.downloading = false;
+                    return Task::future(async move {
+                        rfd::AsyncMessageDialog::new()
+                            .set_title("scrape error!")
+                            .set_level(rfd::MessageLevel::Warning)
+                            .set_description(format!("{e}"))
+                            .show()
+                            .await;
+                    })
+                    .discard();
                 }
             },
             Message::Edit(action) => {
@@ -171,7 +180,7 @@ impl State {
                     if !message.is_empty() {
                         rfd::AsyncMessageDialog::new()
                             .set_title(&path_part)
-                            .set_level(rfd::MessageLevel::Error)
+                            .set_level(rfd::MessageLevel::Warning)
                             .set_description(message)
                             .show()
                             .await;
