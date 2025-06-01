@@ -8,12 +8,15 @@ license = "MIT"
 fitgirl-ddl-lib = { git = "https://github.com/mokurin000/fitgirl-ddl", version = "0.1.0", default-features = false, features = [
     "tokio",
 ] }
+futures-util = "0.3.31"
 iced = { version = "0.13.1", default-features = false, features = [
     "tiny-skia",
     "auto-detect-theme",
     "tokio",
 ] }
+itertools = "0.14.0"
 nyquest-preset = { version = "0.1.0", features = ["async"] }
+rfd = { version = "0.15.3", default-features = false, features = ["tokio", "xdg-portal"] }
 
 [profile.release]
 lto = true
