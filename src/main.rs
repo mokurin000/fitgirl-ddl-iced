@@ -1,11 +1,10 @@
-use std::fmt::Write;
+use std::{fmt::Write, sync::Arc, u32};
 
 use fitgirl_ddl_lib::{
     errors::{ExtractError, ScrapeError},
     extract::{DDL, extract_ddl},
     scrape::GameInfo,
 };
-use futures_util::StreamExt as _;
 use iced::{
     Size, Task,
     widget::{
@@ -14,10 +13,15 @@ use iced::{
     },
 };
 use itertools::Itertools as _;
+use tokio::sync::Semaphore;
 
-struct Counter {
+struct State {
     editor_content: Content,
     init_done: bool,
+    current_pos: u32,
+    max_cap: u32,
+    path_part: String,
+    results: Vec<Result<DDL, ExtractError>>,
 }
 
 #[derive(Debug, Clone)]
@@ -26,6 +30,9 @@ enum Message {
     Scrape,
     Scraped(Result<GameInfo, ScrapeError>),
     Edit(Action),
+    ExtractedSingle {
+        direct_link: Result<DDL, ExtractError>,
+    },
     Extracted {
         path_part: String,
         direct_links: Vec<Result<DDL, ExtractError>>,
@@ -33,13 +40,17 @@ enum Message {
 }
 
 // Implement our Counter
-impl Counter {
+impl State {
     fn new() -> Self {
         // initialize the counter struct
         // with count value as 0.
         Self {
             init_done: false,
             editor_content: Content::new(),
+            current_pos: 0,
+            max_cap: f32::MAX as u32,
+            path_part: String::new(),
+            results: vec![],
         }
     }
 
@@ -65,28 +76,43 @@ impl Counter {
             Message::Scraped(results) => match results {
                 Ok(ddls) => {
                     let path_part = ddls.path_part;
-                    return Task::perform(
-                        async move {
-                            (
-                                path_part,
-                                futures_util::stream::iter(ddls.fuckingfast_links)
-                                    .map(async |link| extract_ddl(link).await)
-                                    .buffer_unordered(3)
-                                    .collect::<Vec<_>>()
-                                    .into_future()
-                                    .await,
-                            )
-                        },
-                        |(path_part, direct_links)| Message::Extracted {
-                            path_part,
-                            direct_links,
-                        },
-                    );
+
+                    self.path_part = path_part;
+                    self.max_cap = ddls.fuckingfast_links.len() as _;
+                    self.current_pos = 0;
+
+                    let sem = Arc::new(Semaphore::new(2));
+
+                    return Task::batch(ddls.fuckingfast_links.into_iter().map(|url| {
+                        let sem = sem.clone();
+                        Task::perform(
+                            async move {
+                                let _sem = sem.acquire().await;
+                                extract_ddl(url).await
+                            },
+                            |direct_link| Message::ExtractedSingle { direct_link },
+                        )
+                    }));
                 }
                 Err(_e) => {}
             },
             Message::Edit(action) => {
                 self.editor_content.perform(action);
+            }
+            Message::ExtractedSingle { direct_link } => {
+                self.results.push(direct_link);
+                self.current_pos += 1;
+
+                if self.results.len() == self.max_cap as usize {
+                    let mut direct_links = Vec::new();
+                    direct_links.append(&mut self.results);
+                    let path_part = self.path_part.clone();
+
+                    return Task::done(Message::Extracted {
+                        path_part,
+                        direct_links,
+                    });
+                }
             }
             Message::Extracted {
                 path_part,
@@ -120,7 +146,7 @@ impl Counter {
                                     },
                                 )
                                 .join("\n");
-                            file.write(aria2_input.as_bytes()).await;
+                            let _ = file.write(aria2_input.as_bytes()).await;
                         }
                     };
 
@@ -151,7 +177,12 @@ impl Counter {
                 .on_action(Message::Edit),
             widget::button("scrape").on_press(Message::Scrape)
         ];
-        widget::container(row)
+        let col = widget::column![
+            row,
+            widget::vertical_space().height(5.0),
+            widget::progress_bar(0.0..=self.max_cap as f32, self.current_pos as f32)
+        ];
+        widget::container(col)
             .width(iced::Length::Fill)
             .height(iced::Length::Fill)
             .into()
@@ -162,12 +193,12 @@ fn main() -> Result<(), iced::Error> {
     nyquest_preset::register();
 
     // run the app from main function
-    iced::application("fitgirl-ddl", Counter::update, Counter::view)
+    iced::application("fitgirl-ddl", State::update, State::view)
         .centered()
-        .window_size(Size::new(800., 50.))
+        .window_size(Size::new(800., 65.))
         .run_with(|| {
             (
-                Counter::new(),
+                State::new(),
                 iced::Task::perform(
                     async {
                         let _ = fitgirl_ddl_lib::init_nyquest().await;

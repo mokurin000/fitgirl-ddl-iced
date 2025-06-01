@@ -1035,12 +1035,13 @@ dependencies = [
  "itertools",
  "nyquest-preset",
  "rfd",
+ "tokio",
 ]
 
 [[package]]
 name = "fitgirl-ddl-lib"
 version = "0.1.0"
-source = "git+https://github.com/mokurin000/fitgirl-ddl#29d4e478b9306a2ef7a922563cf22ca84e2d75f1"
+source = "git+https://github.com/mokurin000/fitgirl-ddl#4b27949a8f87ea774e1e67463505deeaa5034ff7"
 dependencies = [
  "nyquest",
  "scraper",
