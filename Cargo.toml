@@ -2,9 +2,12 @@
 name = "fitgirl-ddl-iced"
 version = "0.1.0"
 edition = "2024"
+license = "MIT"
 
 [dependencies]
-fitgirl-ddl-lib = { git = "https://github.com/mokurin000/fitgirl-ddl", version = "0.1.0", default-features = false, features = ["tokio"] }
+fitgirl-ddl-lib = { git = "https://github.com/mokurin000/fitgirl-ddl", version = "0.1.0", default-features = false, features = [
+    "tokio",
+] }
 iced = { version = "0.13.1", default-features = false, features = [
     "tiny-skia",
     "auto-detect-theme",
