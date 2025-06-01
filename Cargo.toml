@@ -18,9 +18,12 @@ rfd = { version = "0.15.3", default-features = false, features = [
 ] }
 fitgirl-ddl-lib = { git = "https://github.com/mokurin000/fitgirl-ddl", version = "0.1.0", default-features = false, features = [
     "tokio",
+    "serde",
 ] }
 futures-util = "0.3.31"
 tokio = { version = "1.45.1", default-features = false, features = ["sync"] }
+ahash = "0.8.12"
+serde_json = "1.0.140"
 
 [profile.release]
 lto = true

@@ -1,4 +1,4 @@
-use std::{fmt::Write, sync::Arc, u32};
+use std::{env::current_exe, fmt::Write, path::PathBuf, sync::Arc, u32};
 
 use fitgirl_ddl_lib::{
     errors::{ExtractError, ScrapeError},
@@ -12,7 +12,6 @@ use iced::{
         text_editor::{Action, Content},
     },
 };
-use itertools::Itertools as _;
 use tokio::sync::Semaphore;
 
 pub struct State {
@@ -125,41 +124,50 @@ impl State {
                 }
 
                 return Task::future(async move {
-                    let savefile = async {
-                        let Some(file) = rfd::AsyncFileDialog::new()
-                            .add_filter("aria2 input file", &["txt"])
-                            .set_title(format!("Save aria2 input for {path_part}"))
-                            .save_file()
-                            .await
-                        else {
+                    let path_part = path_part.clone();
+                    let path_part2 = path_part.clone();
+                    let _dl = direct_links.clone();
+                    tokio::task::spawn_blocking(|| {
+                        let ddls = _dl.into_iter().flatten().collect::<Vec<_>>();
+                        let Ok(ddls) = serde_json::to_string(&ddls) else {
                             return;
                         };
 
-                        let aria2_input = direct_links
-                            .iter()
-                            .flatten()
-                            .map(
-                                |DDL {
-                                     filename,
-                                     direct_link,
-                                 }| {
-                                    format!("{direct_link}\n    continue=true\n    out={filename}")
-                                },
-                            )
-                            .join("\n");
-                        let _ = file.write(aria2_input.as_bytes()).await;
-                    };
+                        let mut cmd = PathBuf::from("fitgirl-ddl-iced-select");
+
+                        for path in [
+                            PathBuf::from(
+                                #[cfg(windows)]
+                                "./fitgirl-ddl-iced-select.exe",
+                                #[cfg(not(windows))]
+                                "./fitgirl-ddl-iced-select",
+                            ),
+                            current_exe().unwrap_or_default().join(
+                                #[cfg(windows)]
+                                "fitgirl-ddl-iced-select.exe",
+                                #[cfg(not(windows))]
+                                "fitgirl-ddl-iced-select",
+                            ),
+                        ] {
+                            if path.exists() {
+                                cmd = path;
+                                break;
+                            }
+                        }
+
+                        let _ = tokio::process::Command::new(cmd)
+                            .arg(path_part2)
+                            .arg(ddls)
+                            .spawn();
+                    });
 
                     if !message.is_empty() {
-                        let msg = rfd::AsyncMessageDialog::new()
+                        rfd::AsyncMessageDialog::new()
                             .set_title(&path_part)
                             .set_level(rfd::MessageLevel::Error)
                             .set_description(message)
-                            .show();
-
-                        futures_util::join!(msg, savefile);
-                    } else {
-                        savefile.await;
+                            .show()
+                            .await;
                     }
                 })
                 .discard();
