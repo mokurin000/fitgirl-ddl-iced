@@ -1,0 +1,14 @@
+[package]
+name = "iced-test"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+iced = { version = "0.13.1", default-features = false, features = ["tiny-skia", "auto-detect-theme", "tokio"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
+opt-level = "s"
