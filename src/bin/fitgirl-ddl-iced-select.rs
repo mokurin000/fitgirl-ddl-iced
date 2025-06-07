@@ -124,7 +124,11 @@ impl State {
             column = column.push(Space::new(0, 5))
         }
 
-        column = column.push(widget::button("Export").on_press(Message::Export));
+        column = column.push(
+            widget::button("Export")
+                .on_press(Message::Export)
+                .width(iced::Length::Fill),
+        );
 
         widget::container(column)
             .width(iced::Length::Fill)
