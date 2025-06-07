@@ -1,5 +1,8 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 mod ui;
 use ui::{Message, State};
+
 fn main() -> Result<(), iced::Error> {
     nyquest_preset::register();
 
