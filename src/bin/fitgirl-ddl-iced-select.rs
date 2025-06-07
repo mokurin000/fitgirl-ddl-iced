@@ -106,14 +106,21 @@ impl State {
     fn view(&self) -> iced::Element<'_, Message> {
         let mut column = Column::new();
 
-        for (name, checked) in &self.groups_checked {
-            column = column.push(widget::checkbox(name, *checked).on_toggle(move |t| {
-                if t {
-                    Message::Check(name.clone())
-                } else {
-                    Message::Uncheck(name.clone())
-                }
-            }));
+        for (name, checked) in self.groups_checked.clone().into_iter() {
+            let mut cbox = widget::checkbox(&name, checked);
+
+            if !name.contains("fitgirl-repacks.site") {
+                cbox = cbox.on_toggle(move |toggle| {
+                    let action = if toggle {
+                        Message::Check
+                    } else {
+                        Message::Uncheck
+                    };
+                    action(name.clone())
+                });
+            }
+
+            column = column.push(cbox);
         }
 
         column = column.push(widget::button("Export").on_press(Message::Export));
