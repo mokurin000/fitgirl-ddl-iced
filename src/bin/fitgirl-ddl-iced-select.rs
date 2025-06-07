@@ -4,7 +4,7 @@ use std::{collections::BTreeMap, path::PathBuf};
 
 use ahash::AHashMap;
 use fitgirl_ddl_lib::extract::DDL;
-use iced::widget::{self, Column};
+use iced::widget::{self, Column, Space};
 use itertools::Itertools;
 
 fn main() -> Result<(), iced::Error> {
@@ -121,6 +121,7 @@ impl State {
             }
 
             column = column.push(cbox);
+            column = column.push(Space::new(0, 5))
         }
 
         column = column.push(widget::button("Export").on_press(Message::Export));
