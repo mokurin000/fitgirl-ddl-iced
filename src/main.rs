@@ -1,7 +1,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use fitgirl_ddl_lib::set_fg_cookies;
+use itertools::Itertools as _;
+
+use crate::model::Cookie;
+use crate::ui::{Message, State};
+
+mod model;
 mod ui;
-use ui::{Message, State};
 
 fn main() -> Result<(), iced::Error> {
     nyquest_preset::register();
@@ -15,7 +21,19 @@ fn main() -> Result<(), iced::Error> {
                 State::new(),
                 iced::Task::perform(
                     async {
-                        let _ = fitgirl_ddl_lib::init_nyquest().await;
+                        let Ok(Ok(cookies)) = tokio::fs::read("cookies.json")
+                            .await
+                            .map(|bytes| serde_json::from_slice::<Vec<Cookie>>(&bytes))
+                        else {
+                            return;
+                        };
+
+                        let _ = set_fg_cookies(
+                            cookies
+                                .iter()
+                                .map(|Cookie { name, value }| format!("{name}={value}"))
+                                .join("; "),
+                        );
                     },
                     |_| Message::InitDone,
                 ),
