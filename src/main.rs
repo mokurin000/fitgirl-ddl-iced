@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use fitgirl_ddl_lib::set_fg_cookies;
+use fitgirl_ddl_lib::{init_nyquest, set_fg_cookies};
 use itertools::Itertools as _;
 
 use crate::model::Cookie;
@@ -21,6 +21,8 @@ fn main() -> Result<(), iced::Error> {
                 State::new(),
                 iced::Task::perform(
                     async {
+                        let _ = init_nyquest().await;
+
                         let Ok(Ok(cookies)) = tokio::fs::read("cookies.json")
                             .await
                             .map(|bytes| serde_json::from_slice::<Vec<Cookie>>(&bytes))
