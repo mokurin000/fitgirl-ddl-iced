@@ -1,4 +1,4 @@
-use std::{env::current_exe, fmt::Write, path::PathBuf, sync::Arc, u32};
+use std::{env::current_exe, fmt::Write, path::Path, sync::Arc, u32};
 
 use fitgirl_ddl_lib::{
     errors::{ExtractError, ScrapeError},
@@ -149,29 +149,18 @@ impl State {
                             return;
                         };
 
-                        let mut cmd = PathBuf::from("fitgirl-ddl-iced-select");
-
-                        for path in [
-                            PathBuf::from(
-                                #[cfg(windows)]
-                                "./fitgirl-ddl-iced-select.exe",
-                                #[cfg(not(windows))]
-                                "./fitgirl-ddl-iced-select",
-                            ),
-                            current_exe().unwrap_or_default().join(
+                        let select_exe = current_exe()
+                            .ok()
+                            .and_then(|p| p.parent().map(Path::to_path_buf))
+                            .unwrap_or_default()
+                            .join(
                                 #[cfg(windows)]
                                 "fitgirl-ddl-iced-select.exe",
                                 #[cfg(not(windows))]
                                 "fitgirl-ddl-iced-select",
-                            ),
-                        ] {
-                            if path.exists() {
-                                cmd = path;
-                                break;
-                            }
-                        }
+                            );
 
-                        let _ = tokio::process::Command::new(cmd)
+                        let _ = tokio::process::Command::new(select_exe)
                             .arg(path_part2)
                             .arg(ddls)
                             .spawn();
