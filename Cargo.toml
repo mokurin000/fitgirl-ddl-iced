@@ -11,12 +11,12 @@ iced = { version = "0.13.1", default-features = false, features = [
     "tokio",
 ] }
 itertools = "0.14.0"
-nyquest-preset = { version = "0.1.0", features = ["async"] }
+nyquest-preset = { version = "0.2.0", features = ["async"] }
 rfd = { version = "0.15.3", default-features = false, features = [
     "tokio",
     "xdg-portal",
 ] }
-fitgirl-ddl-lib = { git = "https://github.com/mokurin000/fitgirl-ddl", version = "0.1.1", default-features = false, features = [
+fitgirl-ddl-lib = { version = "0.2.0", default-features = false, features = [
     "tokio",
     "serde",
 ] }

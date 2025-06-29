@@ -360,9 +360,9 @@ dependencies = [
 
 [[package]]
 name = "bumpalo"
-version = "3.18.1"
+version = "3.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "793db76d6187cd04dff33004d8e6c9cc4e05cd330500379d2394209271b4aeee"
+checksum = "46c5e41b57b8bba42a04676d81cb89e9ee8e859a1a66f80a5a72e1cb76b34d43"
 
 [[package]]
 name = "by_address"
@@ -657,9 +657,9 @@ checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 
 [[package]]
 name = "crunchy"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43da5946c66ffcc7745f48db692ffbb10a83bfe0afd96235c5c2a4fb23994929"
+checksum = "460fbee9c2c2f33933d720630a6a0bac33ba7053db5344fac858d4b8952d77d5"
 
 [[package]]
 name = "crypto-common"
@@ -1043,8 +1043,9 @@ dependencies = [
 
 [[package]]
 name = "fitgirl-ddl-lib"
-version = "0.1.1"
-source = "git+https://github.com/mokurin000/fitgirl-ddl#a130f68d899c79ee54b87eea255ae1b14c0eaef9"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aca6d800e70fa7e10de239f1e4809c4d1d53c2255327f17214b4124e9321aea8"
 dependencies = [
  "nyquest",
  "scraper",
@@ -1621,9 +1622,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.9.0"
+version = "2.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cea70ddb795996207ad57735b50c5982d8844f38ba9ee5f1aedcfb708a2aa11e"
+checksum = "fe4cd85333e22411419a0bcae1297d25e58c9443848b11dc6a86fefe8c78a661"
 dependencies = [
  "equivalent",
  "hashbrown 0.15.4",
@@ -1729,9 +1730,9 @@ checksum = "f9fbbcab51052fe104eb5e5d351cf728d30a5be1fe14d9be8a3b097481fb97de"
 
 [[package]]
 name = "libredox"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0ff37bd590ca25063e35af745c343cb7a0271906fb7b37e4813e8f79f00268d"
+checksum = "1580801010e535496706ba011c15f8532df6b42297d2e471fec38ceadd8c0638"
 dependencies = [
  "bitflags 2.9.1",
  "libc",
@@ -1958,18 +1959,19 @@ dependencies = [
 
 [[package]]
 name = "num_enum"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e613fc340b2220f734a8595782c551f1250e969d87d3be1ae0579e8d4065179"
+checksum = "a973b4e44ce6cad84ce69d797acf9a044532e4184c4f267913d1b546a0727b7a"
 dependencies = [
  "num_enum_derive",
+ "rustversion",
 ]
 
 [[package]]
 name = "num_enum_derive"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af1844ef2428cc3e1cb900be36181049ef3d3193c63e43026cfe202983b27a56"
+checksum = "77e878c846a8abae00dd069496dbe8751b16ac1c3d6bd2a7283a938e8228f90d"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -1979,9 +1981,9 @@ dependencies = [
 
 [[package]]
 name = "nyquest"
-version = "0.1.1"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a4722c65afdcbb836197802c2f5dc050825964bebbd9802086e54aef39208b0"
+checksum = "c85e59c79cb09743897025eedd9fa912c213194d3af0fd39ddd917d4eb5a0536"
 dependencies = [
  "nyquest-interface",
  "thiserror 2.0.12",
@@ -1989,24 +1991,23 @@ dependencies = [
 
 [[package]]
 name = "nyquest-backend-curl"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33755d84d0462bf7f524d9855329b65c11408ed1a99da29ec0853cb4ad6a6e63"
+checksum = "87593408667ab2223d4f43423332083e89a37ca3b690630c3eaf1815cad97b19"
 dependencies = [
  "curl",
  "curl-sys",
  "futures-channel",
  "futures-util",
- "memchr",
  "nyquest-interface",
  "slab",
 ]
 
 [[package]]
 name = "nyquest-backend-nsurlsession"
-version = "0.1.1"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b67fcff4b4b16208e87f1ab96aa4a2d19ee4c52e8bb5aaff9eb2c17c7dd4f640"
+checksum = "5ef67dabd097e0e48c4db4743ba8875f73dcede855b41c29b046be25b14fcb13"
 dependencies = [
  "arc-swap",
  "block2 0.6.1",
@@ -2016,13 +2017,14 @@ dependencies = [
  "objc2 0.6.1",
  "objc2-core-foundation",
  "objc2-foundation 0.3.1",
+ "objc2-security",
 ]
 
 [[package]]
 name = "nyquest-backend-winrt"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6252715c7ef065cdb3384bc7551195dd97cc509ea0db25570b2ae1e28b765552"
+checksum = "a58b68b43032fb9cb72368fba2fc14d7908bfeaa775a8fed9dc0e324f4e09702"
 dependencies = [
  "cfg-if",
  "nyquest-interface",
@@ -2034,9 +2036,9 @@ dependencies = [
 
 [[package]]
 name = "nyquest-interface"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "afabf0928178a75d8ded690f55faba7aa69d2998d4d8acca9c6ca4ac879c859d"
+checksum = "2fa05badba985a2986a4c6783665881cfaebdcc1f91814f9ee8518838c0483ff"
 dependencies = [
  "cfg-if",
  "futures-core",
@@ -2046,9 +2048,9 @@ dependencies = [
 
 [[package]]
 name = "nyquest-preset"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d608db341e4b68e5db12bd1befac46786d69ef39c682e47a0795edac9d574be1"
+checksum = "9c5bf587b4df60b547f19268bb3d423eabd835a72b157707a0139c0dd403db2f"
 dependencies = [
  "cfg-if",
  "nyquest",
@@ -2256,6 +2258,17 @@ dependencies = [
  "objc2 0.5.2",
  "objc2-foundation 0.2.2",
  "objc2-metal",
+]
+
+[[package]]
+name = "objc2-security"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1f8e0ef3ab66b08c42644dcb34dba6ec0a574bbd8adbb8bdbdc7a2779731a44"
+dependencies = [
+ "bitflags 2.9.1",
+ "objc2 0.6.1",
+ "objc2-core-foundation",
 ]
 
 [[package]]
@@ -4396,9 +4409,9 @@ checksum = "ec107c4503ea0b4a98ef47356329af139c0a4f7750e621cf2973cd3385ebcb3d"
 
 [[package]]
 name = "xcursor"
-version = "0.3.9"
+version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "635887f4315a33cb714eb059bdbd7c1c92bfa71bc5b9d5115460502f788c2ab5"
+checksum = "bec9e4a500ca8864c5b47b8b482a73d62e4237670e5b5f1d6b9e3cae50f28f2b"
 
 [[package]]
 name = "xdg-home"
