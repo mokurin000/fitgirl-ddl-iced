@@ -69,7 +69,7 @@ jobs:
         uses: houseabsolute/actions-rust-cross@v0
         with:
           target: ${{ matrix.target }}
-          args: "--locked --release --bin=${{ env.RUST_BIN_NAME }}"
+          args: "--locked --release"
           strip: true
       - name: Prepare assets
         shell: bash
