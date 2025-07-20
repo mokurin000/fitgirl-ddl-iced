@@ -16,7 +16,7 @@ rfd = { version = "0.15.3", default-features = false, features = [
     "tokio",
     "xdg-portal",
 ] }
-fitgirl-ddl-lib = { version = "0.2.0", default-features = false, features = [
+fitgirl-ddl-lib = { version = "0.2.1", default-features = false, features = [
     "tokio",
     "serde",
 ] }
